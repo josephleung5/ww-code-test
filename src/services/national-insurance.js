@@ -1,6 +1,6 @@
 const R = require('ramda');
+const RD = require('ramda-decimal');
 const moment = require('moment');
-const RD = require('../utils/ramda-decimal');
 
 const allBands = require('../config/ni');
 
@@ -25,7 +25,24 @@ const bandsOnDate = (date) => {
 };
 
 // TODO this should do more than return the number it's given
-const slice = R.curry((floor, ceiling, num) => num);
+const slice = R.curry((floor, ceiling, num) => {
+  if (RD.eq(floor, 0)) {
+    if (RD.gte(num, ceiling)) {
+      return ceiling;
+    }
+    return num;
+  }
+
+  if (RD.gt(num, floor) && RD.lt(num, ceiling)) {
+    return RD.subtract(num, floor);
+  }
+
+  if (RD.gte(num, ceiling)) {
+    return RD.subtract(ceiling, floor);
+  }
+
+  return RD.ZERO;
+});
 
 const calcForBand = R.curry(
   (income, { floor, ceiling, rate }) => RD.multiply(
