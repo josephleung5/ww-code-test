@@ -78,11 +78,6 @@ describe('NiCompare component', () => {
   });
 
   it('handle server errors', async () => {
-    // global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
-    //   status: 500,
-    //   json: () => Promise.resolve({ ok: false, error: 'Something bad happened' }),
-    // }));
-
     global.fetch = jest.fn(() => Promise.reject(new Error('Server error')));
 
     render(<NiCompare />);
